@@ -292,7 +292,7 @@ const Page = ({ params }) => {
                     </Table>
                 </div>
             ) : (
-                <p>No products yet</p>
+                <p>No inventory yet</p>
             )}
 
             {/* Edit Product Dialog */}

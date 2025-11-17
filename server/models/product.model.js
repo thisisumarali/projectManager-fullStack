@@ -29,7 +29,7 @@ const productSchema = new mongoose.Schema({
         default: "pending",
         required: true
     },
-    SKU: { type: String, required: true, unique: true },
+    SKU: { type: String, required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 })
 productSchema.pre("save", function (next) {

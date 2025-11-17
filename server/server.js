@@ -7,6 +7,7 @@ import categoryRouter from './router/category.routes.js'
 import productRouter from './router/product.routes.js'
 import cors from 'cors'
 import companyRouter from './router/company.routes.js'
+import invoiceRouter from './router/invoice.routes.js'
 const PORT = process.env.PORT || 5000
 const app = express()
 const corsOptions = {
@@ -30,6 +31,7 @@ app.use('/api/adminauth', adminRouter)
 app.use('/api/category', categoryRouter)
 app.use("/api/company", companyRouter)
 app.use("/api/product", productRouter)
+app.use("/api/invoice", invoiceRouter)
 
 
 ConnectDb().then(() => {

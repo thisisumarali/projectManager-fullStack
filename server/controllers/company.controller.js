@@ -59,7 +59,8 @@ export const getCompanyById = async (req, res) => {
 
         const company = await Company.findOne({ _id: id, user: userId }).populate({
             path: "products",
-            select: "productName quantity amount totalAmount balance payment status SKU category",
+            select: "productName quantity amount totalAmount balance payment status SKU category createdAt",
+            options: { sort: { createdAt: -1 } },
             populate: { path: "category", select: "categoryName" }
         });
 

@@ -142,7 +142,7 @@ export function AppSidebar({ ...props }) {
             >
               <a href="#">
                 <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">ERP Management</span>
+                <span className="text-base font-semibold">Inventory Management</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>

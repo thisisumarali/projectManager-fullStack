@@ -48,7 +48,7 @@ export function NavDocuments() {
 
   useEffect(() => {
     fetchCompanies();
-  }, []);
+  }, [companies]);
 
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
