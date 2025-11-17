@@ -1,70 +1,73 @@
 import Company from "../models/company.model.js";
 import Product from "../models/product.model.js";
 
-/**
- * 🏢 Create a new company
- */
 export const createCompany = async (req, res) => {
     try {
         const { companyName, contact, address } = req.body;
+        const userId = req.user.id;
 
-        const existing = await Company.findOne({ companyName });
+        const existing = await Company.findOne({ companyName, user: userId });
         if (existing) {
-            return res
-                .status(400)
-                .json({ success: false, msg: "Company already exists." });
+            return res.status(400).json({
+                success: false,
+                msg: "Company already exists"
+            });
         }
 
-        const company = await Company.create({ companyName, contact, address });
+        const company = await Company.create({
+            companyName,
+            contact,
+            address,
+            user: userId
+        });
 
         res.status(201).json({
             success: true,
-            msg: "Company created successfully.",
-            company,
+            msg: "Company created successfully",
+            company
         });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
 };
 
-/**
- * 📋 Get all companies (with optional product data)
- */
 export const getAllCompanies = async (req, res) => {
     try {
-        const companies = await Company.find()
+        const userId = req.user.id;
+
+        const companies = await Company.find({ user: userId })
             .populate({
                 path: "products",
-                select: "productName quantity amount totalAmount balance payment status SKU", // customize fields
+                select: "productName quantity amount totalAmount balance payment status SKU"
             })
             .sort({ companyName: 1 });
 
         res.status(200).json({
             success: true,
             count: companies.length,
-            companies,
+            companies
         });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
 };
 
-/**
- * 🔍 Get single company by ID (with products)
- */
 export const getCompanyById = async (req, res) => {
     try {
         const { id } = req.params;
-        const company = await Company.findById(id).populate({
+        const userId = req.user.id;
+
+        const company = await Company.findOne({ _id: id, user: userId }).populate({
             path: "products",
             select: "productName quantity amount totalAmount balance payment status SKU category",
-            populate: { path: "category", select: "categoryName" },
+            populate: { path: "category", select: "categoryName" }
         });
 
         if (!company) {
-            return res
-                .status(404)
-                .json({ success: false, msg: "Company not found." });
+            return res.status(404).json({
+                success: false,
+                msg: "Company not found"
+            });
         }
 
         res.status(200).json({ success: true, company });
@@ -73,19 +76,18 @@ export const getCompanyById = async (req, res) => {
     }
 };
 
-/**
- * ✏️ Update a company
- */
 export const updateCompany = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId = req.user.id;
         const { companyName, contact, address } = req.body;
 
-        const company = await Company.findById(id);
+        const company = await Company.findOne({ _id: id, user: userId });
         if (!company) {
-            return res
-                .status(404)
-                .json({ success: false, msg: "Company not found." });
+            return res.status(404).json({
+                success: false,
+                msg: "Company not found"
+            });
         }
 
         company.companyName = companyName ?? company.companyName;
@@ -96,41 +98,35 @@ export const updateCompany = async (req, res) => {
 
         res.status(200).json({
             success: true,
-            msg: "Company updated successfully.",
-            company,
+            msg: "Company updated successfully",
+            company
         });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
 };
 
-/**
- * 🗑️ Delete a company (and its products)
- */
 export const deleteCompany = async (req, res) => {
     try {
         const { id } = req.params;
+        const userId = req.user.id;
 
-        const company = await Company.findById(id);
+        const company = await Company.findOne({ _id: id, user: userId });
         if (!company) {
-            return res
-                .status(404)
-                .json({ success: false, msg: "Company not found." });
+            return res.status(404).json({
+                success: false,
+                msg: "Company not found"
+            });
         }
 
-        // Delete all products belonging to this company
         await Product.deleteMany({ company: company._id });
-
-        // Delete the company itself
         await Company.findByIdAndDelete(id);
 
         res.status(200).json({
             success: true,
-            msg: "Company and its products deleted successfully.",
+            msg: "Company and its products deleted successfully"
         });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }
 };
-
-

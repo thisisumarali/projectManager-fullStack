@@ -6,8 +6,11 @@ import {
     updateCompany,
     deleteCompany,
 } from "../controllers/company.controller.js";
+import { userauthmiddleware } from "../middlewares/token.middleware.js";
+
 
 const companyRouter = express.Router();
+companyRouter.use(userauthmiddleware);
 
 companyRouter.post("/", createCompany);
 companyRouter.get("/", getAllCompanies);
